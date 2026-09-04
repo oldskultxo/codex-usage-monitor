@@ -1,0 +1,14 @@
+{
+  "name": "codex-usage-monitor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node core/monitor.mjs",
+    "test": "node --test core/monitor.test.mjs",
+    "snapshot": "node core/monitor.mjs --snapshot"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

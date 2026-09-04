@@ -1,0 +1,10 @@
+node_modules/
+build/
+macos/.build/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.DS_Store
+config.local.json
+.env
+.env.*

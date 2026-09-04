@@ -1,0 +1,15 @@
+{
+  "config_version": 1,
+  "port": 47931,
+  "scan_interval_seconds": 30,
+  "notifications": true,
+  "codex": {
+    "plan": "personal",
+    "five_hour_alert_percent": 10,
+    "weekly_alert_percent": 10,
+    "rearm_percent": 15,
+    "cli_path": "codex",
+    "rate_limit_snapshot_path": "",
+    "manual_remaining_percent": null
+  }
+}

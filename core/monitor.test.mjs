@@ -1,0 +1,8 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { editableConfig, normaliseQuota, normaliseQuotaWindows, previousQuotaWithDifferentReset, updateEditableConfig } from "./monitor.mjs";
+
+test("normalises a five-hour quota payload", () => { assert.deepEqual(normaliseQuota({ windows: [{ name: "5h", remaining_percent: 9.5, reset_at: "2026-09-01T12:00:00Z" }] }), { remaining: 9.5, resetAt: "2026-09-01T12:00:00.000Z" }); });
+test("normalises five-hour and weekly quota windows", () => { assert.deepEqual(normaliseQuotaWindows({ rateLimits: { primary: { usedPercent: 25, windowDurationMins: 300, resetsAt: 1788262960 }, secondary: { usedPercent: 40, windowDurationMins: 10080, resetsAt: 1788867760 } } }).map(({ windowName, remaining, resetAt }) => ({ windowName, remaining, resetAt })), [{ windowName: "5h", remaining: 75, resetAt: "2026-09-01T11:42:40.000Z" }, { windowName: "weekly", remaining: 60, resetAt: "2026-09-08T11:42:40.000Z" }]); });
+test("does not compare reset timestamps from different quota sources", () => { const db = { prepare() { return { get(windowName, source, resetAt) { assert.equal(windowName, "5h"); assert.equal(source, "codex-app-server"); assert.equal(resetAt, "2026-09-03T11:00:00.000Z"); return null; } }; } }; assert.equal(previousQuotaWithDifferentReset(db, "5h", "2026-09-03T11:00:00.000Z", "codex-app-server"), null); });
+test("updates the two editable Codex alert settings", () => { const config = updateEditableConfig({ codex: { five_hour_alert_percent: 10, weekly_alert_percent: 10 } }, { fiveHourAlertPercent: 8, weeklyAlertPercent: 12 }); assert.deepEqual(editableConfig(config), { fiveHourAlertPercent: 8, weeklyAlertPercent: 12 }); });
